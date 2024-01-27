@@ -1,4 +1,5 @@
 const { Thought, User } = require('../../models');
+const mongoose = require('mongoose');
 
 module.exports = {
   // Get all thoughts
@@ -71,4 +72,58 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+
+// Create a reaction for a specific thought
+async createReaction(req, res) {
+  try {
+    const { thoughtId } = req.params;
+    const { reactionBody, username } = req.body;
+
+    const thought = await Thought.findById(thoughtId);
+    if (!thought) {
+      return res.status(404).json({ message: 'Thought not found' });
+    }
+
+    // Generate ObjectId for reactionId
+    const reactionId = new mongoose.Types.ObjectId();
+
+    // Push new reaction with generated reactionId
+    thought.reactions.push({ reactionId, reactionBody, username });
+    await thought.save();
+
+    res.status(201).json(thought);
+  } catch (error) {
+    console.error('Error creating reaction:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+},
+
+  // Delete a reaction from a specific thought
+  async deleteReaction(req, res) {
+    try {
+      // Extract thoughtId and reactionId from request parameters
+      const { thoughtId, reactionId } = req.params;
+
+      // Find the thought by its ID
+      const thought = await Thought.findById(thoughtId);
+
+      // Check if the thought exists
+      if (!thought) {
+        return res.status(404).json({ message: 'Thought not found' });
+      }
+
+      // Filter out the reaction with the provided reactionId
+      thought.reactions = thought.reactions.filter(reaction => reaction._id.toString() !== reactionId);
+
+      // Save the updated thought
+      await thought.save();
+
+      // Respond with a success status
+      res.status(200).json({ message: 'Reaction successfully deleted' });
+    } catch (error) {
+      // Handle errors
+      console.error('Error deleting reaction:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+  }
 };
