@@ -19,7 +19,7 @@ The-Mongoose-Social is a social network web API designed to share users' thought
 
 ### Video Walkthrough
 
-[View on Google Drive](https://drive.google.com/file/d/13t2josGTkaIKO1rkBC-heNEx1F59C8gr/view)
+[View on Google Drive](https://drive.google.com/file/d/1VgAim7wCe_I9c9B-otBvI4pbpbDbAo26/view?usp=drive_link)
 
 ### Repository Link
 
